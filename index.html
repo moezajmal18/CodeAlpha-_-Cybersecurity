@@ -1,281 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Phishing Awareness Quiz</title>
-    <style>
-      :root {
-        --bg: #f5f7fa;
-        --card: #ffffff;
-        --text: #1f2937;
-        --navy: #0b1f3a;
-        --teal: #14b8a6;
-        --red: #ef4444;
-        --green: #16a34a;
-        --border: #e5e7eb;
-      }
-
-      @media (prefers-color-scheme: dark) {
-        :root {
-          --bg: #0b1f3a;
-          --card: #12294a;
-          --text: #e5e7eb;
-          --navy: #ffffff;
-          --border: #27456f;
-        }
-      }
-
-      * { box-sizing: border-box; }
-
-      body {
-        margin: 0;
-        min-height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;
-        background: var(--bg);
-        color: var(--text);
-        font-family: Calibri, "Segoe UI", Arial, sans-serif;
-        padding: 24px;
-      }
-
-      .box {
-        width: 100%;
-        max-width: 640px;
-      }
-
-      h1 {
-        color: var(--navy);
-        margin: 0 0 6px;
-      }
-
-      .sub {
-        opacity: 0.7;
-        margin-bottom: 16px;
-      }
-
-      .card {
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-top: 5px solid var(--teal);
-        border-radius: 10px;
-        padding: 20px;
-      }
-
-      .bar {
-        height: 6px;
-        background: var(--border);
-        border-radius: 3px;
-        margin-bottom: 16px;
-        overflow: hidden;
-      }
-
-      .bar i {
-        display: block;
-        height: 100%;
-        background: var(--teal);
-        width: 0;
-        transition: width 0.3s ease;
-      }
-
-      .q {
-        font-size: 1.15rem;
-        font-weight: 600;
-        margin-bottom: 14px;
-        white-space: pre-line;
-      }
-
-      button.option {
-        display: block;
-        width: 100%;
-        text-align: left;
-        padding: 12px;
-        margin: 8px 0;
-        border: 1.5px solid var(--border);
-        background: var(--card);
-        color: var(--text);
-        border-radius: 8px;
-        font-size: 1rem;
-        cursor: pointer;
-      }
-
-      button.option:hover:not(:disabled) {
-        border-color: var(--teal);
-      }
-
-      button.option.correct {
-        border-color: var(--green) !important;
-        background: rgba(22, 163, 74, 0.15) !important;
-      }
-
-      button.option.wrong {
-        border-color: var(--red) !important;
-        background: rgba(239, 68, 68, 0.15) !important;
-      }
-
-      button.option:disabled {
-        cursor: default;
-      }
-
-      .exp {
-        margin-top: 12px;
-        padding: 10px;
-        border-left: 4px solid var(--teal);
-        background: rgba(20, 184, 166, 0.15);
-        border-radius: 4px;
-      }
-
-      .next {
-        margin-top: 14px;
-        background: var(--navy);
-        color: var(--bg);
-        border: 0;
-        padding: 10px 20px;
-        border-radius: 8px;
-        font-size: 1rem;
-        cursor: pointer;
-      }
-
-      .score {
-        font-size: 3rem;
-        font-weight: 700;
-        color: var(--teal);
-      }
-    </style>
-  </head>
-  <body>
-    <div class="box">
-      <h1>Phishing Awareness Quiz</h1>
-      <div class="sub">CodeAlpha Cybersecurity Internship, Task 2</div>
-      <div class="card">
-        <div class="bar"><i id="bar"></i></div>
-        <div id="app"></div>
-      </div>
-    </div>
-
-    <script>
-      const Q = [
-        {
-          q: "An email from it-support@micros0ft-help.com says your password expires in 1 hour. What is the biggest red flag?",
-          o: ["It mentions a password", "Look-alike domain and artificial urgency", "It came during business hours", "It asks you to read the email"],
-          a: 1,
-          e: "The biggest warning sign is the fake domain and urgency. Real companies do not pressure you to act instantly through a suspicious address."
-        },
-        {
-          q: "True or false: a padlock icon means a website is safe.",
-          o: ["True", "False"],
-          a: 1,
-          e: "The padlock only means the connection is encrypted. Phishing sites can still use HTTPS and look legitimate."
-        },
-        {
-          q: "Your boss texts: 'Buy gift cards now and keep it quiet.' What do you do?",
-          o: ["Buy them quickly", "Reply asking for the codes", "Verify by calling them directly and report it", "Ignore it and say nothing"],
-          a: 2,
-          e: "This kind of urgent request is a common scam. Always verify through a trusted channel before taking action."
-        },
-        {
-          q: "Which link is safest?",
-          o: ["paypal.com.secure-login.net", "paypal.com", "paypa1.com", "paypal-verify.net"],
-          a: 1,
-          e: "Only paypal.com is the real domain. The others are look-alikes or typo-squatting tricks."
-        },
-        {
-          q: "You clicked a phishing link and entered your password. First move?",
-          o: ["Wait and see", "Delete the email only", "Change the password and tell IT or security immediately", "Restart your computer"],
-          a: 2,
-          e: "Act quickly: change the password, then notify your IT/security team to reduce risk."
-        },
-        {
-          q: "Which is an example of vishing?",
-          o: ["A fake SMS", "A malicious QR code", "A phone call pretending to be your bank", "A fake login page"],
-          a: 2,
-          e: "Vishing means voice phishing, which is a scam phone call pretending to be someone legitimate."
-        },
-        {
-          q: "A caller from your bank asks you to read out the code just sent to your phone. You should:",
-          o: ["Read it to confirm identity", "Hang up and call the number on your card", "Send it by SMS instead", "Share it to complete verification"],
-          a: 1,
-          e: "Never share a one-time code. Hang up and contact the real number on your card or account."
-        },
-        {
-          q: "Which best protects you if your password is stolen?",
-          o: ["A longer username", "Multi-factor authentication", "Clearing cookies", "Using incognito mode"],
-          a: 1,
-          e: "Multi-factor authentication adds another verification step, so a stolen password is not enough on its own."
-        }
-      ];
-
-      let i = 0;
-      let sc = 0;
-      const app = document.getElementById("app");
-      const bar = document.getElementById("bar");
-
-      function show() {
-        bar.style.width = (i / Q.length * 100) + "%";
-        const x = Q[i];
-        app.innerHTML = "";
-
-        const q = document.createElement("div");
-        q.className = "q";
-        q.textContent = (i + 1) + "/" + Q.length + "  " + x.q;
-        app.appendChild(q);
-
-        x.o.forEach((text, index) => {
-          const button = document.createElement("button");
-          button.className = "option";
-          button.textContent = text;
-          button.onclick = () => pick(index);
-          app.appendChild(button);
-        });
-      }
-
-      function pick(selected) {
-        const x = Q[i];
-        const buttons = app.querySelectorAll("button.option");
-
-        buttons.forEach((button, index) => {
-          button.disabled = true;
-          if (index === x.a) {
-            button.classList.add("correct");
-          } else if (index === selected) {
-            button.classList.add("wrong");
-          }
-        });
-
-        if (selected === x.a) sc++;
-
-        const exp = document.createElement("div");
-        exp.className = "exp";
-        exp.textContent = (selected === x.a ? "Correct. " : "Not quite. ") + x.e;
-        app.appendChild(exp);
-
-        const next = document.createElement("button");
-        next.className = "next";
-        next.textContent = i < Q.length - 1 ? "Next" : "See results";
-        next.onclick = () => {
-          i++;
-          if (i < Q.length) {
-            show();
-          } else {
-            end();
-          }
-        };
-        app.appendChild(next);
-      }
-
-      function end() {
-        bar.style.width = "100%";
-        const message = sc >= 7 ? "Excellent. You are phishing-aware!" : sc >= 5 ? "Good job. Review the missed ones." : "Keep practising. Revisit the slides and try again.";
-        app.innerHTML = '<div class="score">' + sc + ' / ' + Q.length + '</div><p>' + message + '</p><button class="next" id="restart">Try again</button>';
-        document.getElementById("restart").onclick = () => {
-          i = 0;
-          sc = 0;
-          show();
-        };
-      }
-
-      show();
-    </script>
-  </body>
-</html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Phishing Awareness Quiz</title>
+<style>
+:root{--bg:#f5f7fa;--card:#fff;--tx:#1f2937;--navy:#0b1f3a;--teal:#14b8a6;--red:#ef4444;--bd:#e5e7eb}
+@media(prefers-color-scheme:dark){:root{--bg:#0b1f3a;--card:#12294a;--tx:#e5e7eb;--navy:#fff;--bd:#27456f}}
+*{box-sizing:border-box}body{margin:0;font-family:Calibri,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--tx);display:flex;justify-content:center;padding:24px}
+.box{width:100%;max-width:640px}h1{color:var(--navy);margin:0 0 4px}.sub{opacity:.7;margin-bottom:16px}
+.card{background:var(--card);border:1px solid var(--bd);border-top:5px solid var(--teal);border-radius:10px;padding:20px}
+.bar{height:6px;background:var(--bd);border-radius:3px;margin-bottom:16px}.bar i{display:block;height:100%;background:var(--teal);border-radius:3px;width:0}
+.q{font-size:1.15rem;font-weight:600;margin-bottom:14px;white-space:pre-line}
+button.o{display:block;width:100%;text-align:left;padding:12px;margin:8px 0;border:1.5px solid var(--bd);background:var(--card);color:var(--tx);border-radius:8px;font-size:1rem;cursor:pointer}
+button.o:hover:not(:disabled){border-color:var(--teal)}button.ok{border-color:#16a34a!important;background:#16a34a22!important}button.no{border-color:var(--red)!important;background:#ef444422!important}
+.exp{margin-top:12px;padding:10px;border-left:4px solid var(--teal);background:#14b8a622;border-radius:4px}
+.nx{margin-top:14px;background:var(--navy);color:var(--bg);border:0;padding:10px 20px;border-radius:8px;font-size:1rem;cursor:pointer}
+.score{font-size:3rem;font-weight:700;color:var(--teal)}
+</style></head><body><div class="box">
+<h1>Phishing Awareness Quiz</h1><div class="sub">CodeAlpha Cybersecurity Internship, Task 2</div>
+<div class="card"><div class="bar"><i id="bar"></i></div><div id="app"></div></div></div>
+<script>
+const Q=[
+{q:"An email from it-support@micros0ft-help.com says your password expires in 1 hour. What is the biggest red flag?",o:["It mentions a password","Look-alike domain and artificial urgency","It came during work hours","It has a company logo"],a:1,e:"The domain uses a zero instead of the letter o, and urgency is a classic pressure tactic."},
+{q:"True or false: a padlock icon means a website is safe.",o:["True","False"],a:1,e:"The padlock only means the connection is encrypted. Phishing sites can have one too."},
+{q:"Your boss texts: 'Buy gift cards now and keep it quiet.' What do you do?",o:["Buy them quickly","Reply asking for the codes","Verify by calling them directly and report it","Ignore it and say nothing"],a:2,e:"Verify through a separate, trusted channel and report the attempt."},
+{q:"Which link is safest?",o:["paypal.com.secure-login.net","paypal.com","paypa1.com","paypal-verify.net"],a:1,e:"Only paypal.com is the real domain. The others are look-alikes or subdomain tricks."},
+{q:"You clicked a phishing link and entered your password. First move?",o:["Wait and see","Delete the email only","Change the password and tell IT or security immediately","Restart your computer"],a:2,e:"Act fast: change passwords, enable MFA and report it so others are protected."},
+{q:"Which is an example of vishing?",o:["A fake SMS","A malicious QR code","A phone call pretending to be your bank","A fake login page"],a:2,e:"Vishing means voice phishing: scam phone calls."},
+{q:"A caller from your bank asks you to read out the code just sent to your phone. You should:",o:["Read it to confirm identity","Hang up and call the number on your card","Send it by SMS instead","Give only half the code"],a:1,e:"Banks never ask for one-time codes. Hang up and call the official number."},
+{q:"Which best protects you if your password is stolen?",o:["A longer username","Multi-factor authentication","Clearing cookies","Using incognito mode"],a:1,e:"MFA means a stolen password alone is not enough to get in."}];
+let i=0,sc=0;const app=document.getElementById("app"),bar=document.getElementById("bar");
+function show(){bar.style.width=(i/Q.length*100)+"%";const x=Q[i];app.innerHTML="";
+ const q=document.createElement("div");q.className="q";q.textContent=(i+1)+"/"+Q.length+"  "+x.q;app.appendChild(q);
+ x.o.forEach((t,k)=>{const b=document.createElement("button");b.className="o";b.textContent=t;b.onclick=()=>pick(k);app.appendChild(b)});}
+function pick(k){const x=Q[i],bs=app.querySelectorAll("button.o");bs.forEach((b,j)=>{b.disabled=true;if(j===x.a)b.classList.add("ok");else if(j===k)b.classList.add("no")});
+ if(k===x.a)sc++;const e=document.createElement("div");e.className="exp";e.textContent=(k===x.a?"Correct. ":"Not quite. ")+x.e;app.appendChild(e);
+ const n=document.createElement("button");n.className="nx";n.textContent=i<Q.length-1?"Next":"See results";n.onclick=()=>{i++;i<Q.length?show():end()};app.appendChild(n);}
+function end(){bar.style.width="100%";const m=sc>=7?"Excellent. You are phishing-aware!":sc>=5?"Good job. Review the missed ones.":"Keep practising. Revisit the slides and try again.";
+ app.innerHTML='<div class="score">'+sc+" / "+Q.length+"</div><p>"+m+'</p><button class="nx" id="r">Try again</button>';document.getElementById("r").onclick=()=>{i=0;sc=0;show()};}
+show();
+</script></body></html>
